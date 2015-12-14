@@ -2,6 +2,10 @@
 
 Make HTML snapshots and a sitemap for your website. (Useful for SEO with SPAs).
 
+## Warning
+
+I pushed this repo to Github beacause it was useful to me (and it may be useful to others), but it's not been tested and IT'S NOT PRODUCTION READY. Use it at your own risk.
+
 ## Requirements
 
 You need node.js >= 0.12 <= 5
