@@ -1,0 +1,18 @@
+{
+  "name": "mpo-seo",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "~3.9.0",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-phantom": "0.0.6",
+    "gulp-sitemap": "^2.2.0",
+    "html-snapshots": "^0.10.0",
+    "run-sequence": "^1.1.5",
+    "wrench": "^1.5.8"
+  },
+  "engines": {
+    "node": ">=5.0"
+  }
+}
