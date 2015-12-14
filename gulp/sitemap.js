@@ -9,7 +9,7 @@ module.exports = function(options) {
   gulp.task('sitemap', function () {
     gulp.src('dist/snapshots/**/*.html')
       .pipe(sitemap({
-        siteUrl: 'http://onedollarcountry.com',
+        siteUrl: options.siteUrl,
       }))
       .pipe(gulp.dest('dist'));
   });

@@ -12,21 +12,7 @@ var sitemap = require('gulp-sitemap');
 var runSequence = require('run-sequence');
 var PluginError = gutil.PluginError;
 
-// Settings
-var settings = {
-  verbose: (_.indexOf(process.argv, '--verbose') >= 0),
-  debug: (_.indexOf(process.argv, '--debug') >= 0),
-  staging: (_.indexOf(process.argv, '--staging') >= 0),
-  prod: (_.indexOf(process.argv, '--prod') >= 0),
-
-  // The maximum number of pages crawled at once (suggested is 4 per CPU)
-  concurrency: 12,
-  outputDirClean: false,
-  timeout: 10000
-};
-
-
-function gulpSnapshot(hosts) {
+function gulpSnapshot(options) {
   // Creating a stream through which each file will pass
   var stream = through.obj(function(file, enc, cb) {
     var self = this;
@@ -43,17 +29,9 @@ function gulpSnapshot(hosts) {
       // Get the array of pages
       var pageList = JSON.parse(file.contents.toString());
 
-      // Get the host URL
-      var host = hosts.localhost;
-      if(settings.staging){
-        host = hosts.staging;
-      }else if(settings.prod){
-        host = hosts.prod;
-      }
-
       // Prepend the host URL to each page
       for (var i = 0; i < pageList.length; i++) {
-        pageList[i] = host + pageList[i];
+        pageList[i] = options.siteUrl + pageList[i];
       }
 
       gutil.log(gutil.colors.blue('Creating ' + gutil.colors.bold(pageList.length) + ' snapshots.'));
@@ -62,9 +40,9 @@ function gulpSnapshot(hosts) {
       var result = htmlSnapshots.run({
           input: 'array',
           source: pageList,
-          processLimit: settings.concurrency,
+          processLimit: options.concurrency,
           outputDir: path.join(__dirname, '../dist/snapshots'),
-          outputDirClean: settings.outputDirClean,
+          outputDirClean: options.outputDirClean,
           selector: {
             '__default': 'div[id=finished]'
           },
@@ -73,7 +51,7 @@ function gulpSnapshot(hosts) {
           },
           checkInterval: 250,
           pollInterval: 500,
-          timeout: settings.timeout,
+          timeout: options.timeout,
           snapshotScript: {
             script: 'removeScripts'
           }
@@ -111,10 +89,10 @@ function gulpSnapshot(hosts) {
 module.exports = function(options) {
   gulp.task('snapshots', function() {
     return gulp.src(options.pageListSrc)
-      .pipe(gulpSnapshot(options.hosts));
+      .pipe(gulpSnapshot(options));
   });
 
   gulp.task('staticize', function(callback) {
-    runSequence('snapshots','sitemap', callback);
+    return runSequence('snapshots','sitemap', callback);
   });
 };
